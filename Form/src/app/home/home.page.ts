@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -8,41 +8,39 @@ import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 })
 export class HomePage {
 
-  get title()
-  {
-    return this.Form.get('Title');
-    }
-    get description()
-    {
-      return this.Form.get('Description');
-      }
+  Form: FormGroup;
+  tasks: any[] = [];
+  showEmptyMessage: boolean = false;
 
-      public errorMessages= {
-        'title': [
-          { type: 'required', message: 'Title is required' },
-          { type: 'minlength', message: 'Title must be at least 3 characters' },
-        ],
-        'description': [
-          { type: 'required', message: 'Description is required' },
-          { type: 'minlength', message: 'Description must be at least 10 characters'
-            }
-            ]}
+  public errorMessages = {
+    'title': [
+      { type: 'required', message: 'Title is required' },
+      { type: 'minlength', message: 'Title must be at least 3 characters' },
+    ],
+    'description': [
+      { type: 'required', message: 'Description is required' },
+      { type: 'minlength', message: 'Description must be at least 10 characters' }
+    ]
+  };
 
-
-  Form = this.FormBuilder.group({
-    title: ['', [Validators.required, Validators.minLength(3)]],
-
-    Description : this.FormBuilder.group({
-      Description: ['', Validators.required, Validators.minLength(10)]
-    })
-
+  constructor(private formBuilder: FormBuilder) {
+    this.Form = this.formBuilder.group({
+      title: ['', [Validators.required, Validators.minLength(3)]],
+      description: ['', [Validators.required, Validators.minLength(10)]]
     });
-
-  constructor(private FormBuilder: FormBuilder) {}
-
-  public submit() {
-    console.log(this.Form.value);
   }
 
+  public submit() {
+    if (this.Form.valid) {
+      this.tasks.push(this.Form.value);
+      this.Form.reset();
+      this.showEmptyMessage = this.tasks.length === 0;
+    } else {
+      console.log('Form is not valid');
+    }
+  }
 
+  get isTasksEmpty(): boolean {
+    return this.tasks.length === 0;
+  }
 }

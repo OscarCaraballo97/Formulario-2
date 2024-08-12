@@ -7,37 +7,53 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-    <form [formGroup]="Form"(ngSubmit)="submit()">
-      <ion-list>
-        <ion-item>
-        <ion-label position="floating">Title</ion-label>
-        <ion-input formControlName="Title" autocapitalize="text"></ion-input>
-        </ion-item>
-      </ion-list>
+  <form [formGroup]="Form" (ngSubmit)="submit()">
+    <ion-list>
+      <ion-item>
+        <ion-label position="floating">
+          Title
+          <small class="error-message" *ngIf="Form.get('title')?.invalid && (Form.get('title')?.dirty || Form.get('title')?.touched)">
+            <span *ngIf="Form.get('title')?.hasError('required')">Title is required</span>
+            <span *ngIf="Form.get('title')?.hasError('minlength')">Title must be at least 3 characters</span>
+          </small>
+        </ion-label>
+        <ion-input formControlName="title" autocapitalize="text"></ion-input>
+      </ion-item>
+    </ion-list>
 
-      <div *NgClass="let error of errorMessages.Title">
-        <ng-container ngif="Title.hasError(error.type) && (Title.dirty || Title.touched)">
-          <small class="error-message">{{error.message}}</small>
-        </ng-container>
+    <ion-list>
+      <ion-item>
+        <ion-label position="floating">
+          Description
+          <small class="error-message" *ngIf="Form.get('description')?.invalid && (Form.get('description')?.dirty || Form.get('description')?.touched)">
+            <span *ngIf="Form.get('description')?.hasError('required')">Description is required</span>
+            <span *ngIf="Form.get('description')?.hasError('minlength')">Description must be at least 10 characters</span>
+          </small>
+        </ion-label>
+        <ion-input formControlName="description" inputmode="text"></ion-input>
+      </ion-item>
+    </ion-list>
 
-      </div>
-      <ion-list>
-        <ion-item>
-        <ion-label position="floating">Description</ion-label>
-       <ion-input formControlName="Description" inputmode="Description"></ion-input>
-        </ion-item>
-      </ion-list>
-
-      <div *ngClass="let error of errorMessages.Description">
-        <ng-container ngif="Description.hasError(error.type) && (Description.dirty || Description.touched)">
-          <small class="error-message">{{error.message}}</small>
-        </ng-container>
-
-      </div>
-      <ion-button [disabled]="!Form.valid" type="submit" >
-        Done
-      <ion-icon slot="end" name="Create"></ion-icon>
+    <ion-button [disabled]="!Form.valid" type="submit">
+      Done
+      <ion-icon slot="end" name="create"></ion-icon>
     </ion-button>
+  </form>
 
-    </form>
+  <ion-list *ngIf="!isTasksEmpty; else emptyList">
+    <ion-item *ngFor="let task of tasks">
+      <ion-label>
+        <h2>{{ task.title }}</h2>
+        <p>{{ task.description }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ng-template #emptyList>
+    <ion-item>
+      <ion-label>
+        The Array is empty
+      </ion-label>
+    </ion-item>
+  </ng-template>
 </ion-content>
