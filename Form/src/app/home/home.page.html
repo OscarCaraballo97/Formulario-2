@@ -1,17 +1,43 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-
+      Form in Ionic
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-    <form>
+    <form [formGroup]="Form"(ngSubmit)="submit()">
       <ion-list>
-        <ion-label position="floating">Formulario</ion-label>
-        <ion-input autocapitalize="text"></ion-input>
+        <ion-item>
+        <ion-label position="floating">Title</ion-label>
+        <ion-input formControlName="Title" autocapitalize="text"></ion-input>
+        </ion-item>
       </ion-list>
+
+      <div *NgClass="let error of errorMessages.Title">
+        <ng-container ngif="Title.hasError(error.type) && (Title.dirty || Title.touched)">
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+
+      </div>
+      <ion-list>
+        <ion-item>
+        <ion-label position="floating">Description</ion-label>
+       <ion-input formControlName="Description" inputmode="Description"></ion-input>
+        </ion-item>
+      </ion-list>
+
+      <div *ngClass="let error of errorMessages.Description">
+        <ng-container ngif="Description.hasError(error.type) && (Description.dirty || Description.touched)">
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+
+      </div>
+      <ion-button [disabled]="!Form.valid" type="submit" >
+        Done
+      <ion-icon slot="end" name="Create"></ion-icon>
+    </ion-button>
 
     </form>
 </ion-content>
